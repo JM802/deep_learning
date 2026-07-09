@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>线性模型到 CNN 速查表</title>
+  <link rel="stylesheet" href="../assets/course-style.css">
+</head>
+<body>
+<main>
+  <header>
+    <h1>线性模型到 CNN 速查表</h1>
+    <p class="lede">用于做题前后快速查漏。先做题，再看这张表，效果更好。</p>
+    <div class="meta">
+      <span class="tag">Linear</span>
+      <span class="tag">Softmax</span>
+      <span class="tag">MLP</span>
+      <span class="tag">CNN</span>
+      <span class="tag">Modern CNN</span>
+    </div>
+  </header>
+
+  <h2>核心公式</h2>
+  <table>
+    <tr><th>主题</th><th>你必须能从记忆中写出</th></tr>
+    <tr><td>线性回归</td><td><code>y_hat = Xw + b</code>，平方损失 <code>1/2 * (y_hat - y)^2</code>，小批量 SGD 沿负梯度更新。</td></tr>
+    <tr><td>Softmax 回归</td><td><code>softmax(o)_i = exp(o_i) / sum_j exp(o_j)</code>，交叉熵 <code>-log p_y</code>。</td></tr>
+    <tr><td>MLP</td><td>仿射变换加非线性激活：<code>H = phi(XW + b)</code>。没有激活函数，多层线性层仍等价于一层线性层。</td></tr>
+    <tr><td>权重衰减</td><td>在损失中加入 <code>lambda/2 * ||w||^2</code>，限制权重过大，降低过拟合风险。</td></tr>
+    <tr><td>Dropout</td><td>训练时随机置零一部分隐藏单元，并按保留概率缩放；推理时不用随机丢弃。</td></tr>
+    <tr><td>卷积输出</td><td>高度：<code>floor((H + 2P - K) / S) + 1</code>。宽度同理。</td></tr>
+    <tr><td>卷积参数量</td><td><code>C_out * C_in * K_h * K_w + C_out</code>，若有 bias。</td></tr>
+    <tr><td>BatchNorm</td><td>标准化后再学习缩放和平移：<code>gamma * x_norm + beta</code>。</td></tr>
+    <tr><td>ResNet</td><td><code>H(x) = F(x) + x</code>，让网络学习残差 <code>F(x)</code>。</td></tr>
+  </table>
+
+  <h2>形状规则</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>线性层</h3>
+      <p>输入 <code>(batch, d)</code>，权重 <code>(d, h)</code>，输出 <code>(batch, h)</code>。</p>
+    </div>
+    <div class="card">
+      <h3>图像张量</h3>
+      <p>PyTorch 常用 <code>(N, C, H, W)</code>。卷积改变 <code>C, H, W</code>，通常不改变 <code>N</code>。</p>
+    </div>
+    <div class="card">
+      <h3>1x1 卷积</h3>
+      <p>在每个空间位置上混合通道，可改变通道数，常用于降维、升维和增加非线性。</p>
+    </div>
+    <div class="card">
+      <h3>池化</h3>
+      <p>通常只改变空间尺寸，不改变通道数。最大池化偏局部显著特征，平均池化偏整体平滑。</p>
+    </div>
+  </div>
+
+  <h2>架构对比</h2>
+  <table>
+    <tr><th>模型</th><th>关键思想</th><th>复习时要会回答</th></tr>
+    <tr><td>LeNet</td><td>卷积 + 池化 + 全连接的早期 CNN。</td><td>为什么比把图像展平后接 MLP 更适合图像？</td></tr>
+    <tr><td>AlexNet</td><td>更深更宽，ReLU，Dropout，大规模视觉任务。</td><td>它相对 LeNet 的工程和表达能力提升是什么？</td></tr>
+    <tr><td>VGG</td><td>用多个 3x3 卷积块堆叠。</td><td>为什么多个小卷积核可替代大卷积核？</td></tr>
+    <tr><td>NiN</td><td>1x1 卷积替代部分全连接思想，全局平均池化。</td><td>GAP 如何减少参数和过拟合？</td></tr>
+    <tr><td>GoogLeNet</td><td>Inception 多分支提取多尺度特征。</td><td>为什么需要 1x1 卷积做通道压缩？</td></tr>
+    <tr><td>BatchNorm</td><td>稳定中间层分布，改善优化。</td><td>训练和推理的统计量有什么不同？</td></tr>
+    <tr><td>ResNet</td><td>残差连接让深层网络更易优化。</td><td>为什么退化问题不只是过拟合？</td></tr>
+  </table>
+
+  <h2>推荐复习路径</h2>
+  <p>先完成 <a href="../lessons/0001-linear-to-cnn-review-questions.html">复习题课</a> 的第 1、2、3 组，再回来查公式。最后做第 5 组综合诊断题。</p>
+
+  <h2>主要来源</h2>
+  <p class="small">参考 Dive into Deep Learning 第 3-7 章：线性神经网络、MLP、深度学习计算、CNN、现代 CNN；以及 PyTorch `torch.nn` 与 `autograd` 文档。</p>
+</main>
+</body>
+</html>
+
