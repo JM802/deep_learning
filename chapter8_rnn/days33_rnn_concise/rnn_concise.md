@@ -8,6 +8,7 @@
 
 $$
 H_t = \tanh(X_tW_{xh} + H_{t-1}W_{hh} + b_h)
+
 $$
 
 调用后得到：
@@ -31,12 +32,14 @@ Y, state = rnn_layer(X, state)
 
 $$
 vocab\_size
+
 $$
 
 但 `nn.RNN` 输出的是隐藏状态，最后一维是：
 
 $$
 num\_hiddens
+
 $$
 
 所以还需要自己定义全连接层：
@@ -49,6 +52,7 @@ self.linear = nn.Linear(num_hiddens, vocab_size)
 
 $$
 隐藏状态 \rightarrow 词表 logits
+
 $$
 
 也就是把每个时间步的隐藏状态转换成对整个词表的预测分数。
@@ -77,6 +81,7 @@ linear 输入维度 = num_hiddens * 2
 
 $$
 linear\_in = num\_hiddens \times num\_directions
+
 $$
 
 ---
